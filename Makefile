@@ -16,15 +16,21 @@ SHELL=/bin/sh
 
 # To assist in cross-compiling
 CC=gcc
+CC=${QNX_HOST}/usr/bin/qcc -V4.4.2,gcc_ntoarmv7le_gpp
 AR=ar
+AR=${QNX_HOST}/usr/bin/ntoarmv7-ar
 RANLIB=ranlib
+RANLIB=${QNX_HOST}/usr/bin/ntoarmv7-ranlib
 LDFLAGS=
+LDFLAGS="-L${QNX_TARGET}/armle-v7/lib -L${PREFIX}/lib" \
 
 BIGFILES=-D_FILE_OFFSET_BITS=64
 CFLAGS=-Wall -Winline -O2 -g $(BIGFILES)
+CFLAGS=-D__PLAYBOOK__ -D__QNXNTO__ -Wall -Winline -O2 -g $(BIGFILES)
 
 # Where you want it installed when you do 'make install'
 PREFIX=/usr/local
+PREFIX=../install
 
 
 OBJS= blocksort.o  \
@@ -35,7 +41,8 @@ OBJS= blocksort.o  \
       decompress.o \
       bzlib.o
 
-all: libbz2.a bzip2 bzip2recover test
+#all: libbz2.a bzip2 bzip2recover test
+all: libbz2.a bzip2 bzip2recover
 
 bzip2: libbz2.a bzip2.o
 	$(CC) $(CFLAGS) $(LDFLAGS) -o bzip2 bzip2.o -L. -lbz2
